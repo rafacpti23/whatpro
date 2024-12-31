@@ -1,0 +1,11 @@
+# We have defined a web hook receiver that will be implemented in our Spring boot app
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 30s
+  repeat_interval: 5m
+  receiver: 'web.hook'
+receivers:
+  - name: 'web.hook'
+    webhook_configs:
+      - url: 'http://infobip-prometheus-alerting:8080/send-alert'

@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus.alert.yml:/etc/prometheus/prometheus.alert.yml
+    ports:
+      - "9090:9090"
+    networks:
+        - monitoring-example
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
+    networks:
+      - monitoring-example
+
+  infobip-prometheus-alerting:
+    build:
+      context: ./infobip-prometheus-alerting
+      dockerfile: Dockerfile
+    environment:
+      INFOBIP_BASE_URL: ${INFOBIP_BASE_URL}
+      INFOBIP_API_KEY: ${INFOBIP_API_KEY}
+      SENDER_NUMBER: ${SENDER_NUMBER}
+      RECEIVER_NUMBER: ${RECEIVER_NUMBER}
+
+    depends_on:
+      prometheus:
+        condition: service_started
+      alertmanager:
+        condition: service_started
+    ports:
+        - "8080:8080"
+    networks:
+      - monitoring-example
+
+networks:
+    monitoring-example:
+        driver: bridge
