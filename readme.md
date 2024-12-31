@@ -1,5 +1,5 @@
 
-# Prometheus WhatsApp API integration
+# Prometheus WhatsApp API integration by Ramel
 ***
 
 Materials for a tutorial available at https://www.infobip.com/docs/tutorials
